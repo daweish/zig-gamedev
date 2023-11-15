@@ -23,6 +23,12 @@ pub fn init() Error!void {
 }
 extern fn glfwInit() i32;
 
+// <cwalsh - Add error callback to exported api>
+pub const ErrCallback = *const fn (c_int, [*:0]const u8) callconv(.C) void;
+pub const setErrorCallback = glfwSetErrorCallback;
+extern fn glfwSetErrorCallback(callback: ?ErrCallback) ?ErrCallback;
+// </cwalsh>
+
 /// `pub fn terminate() void`
 pub const terminate = glfwTerminate;
 extern fn glfwTerminate() void;
@@ -61,6 +67,16 @@ extern fn glfwGetTime() f64;
 /// `pub fn setTime(time: f64) void`
 pub const setTime = glfwSetTime;
 extern fn glfwSetTime(time: f64) void;
+
+// <cwalsh Add tick time api>
+// Returns the underlying timer where TimerValue / Frequency is seconds since init
+pub const getTimerValue = glfwGetTimerValue;
+extern fn glfwGetTimerValue() u64;
+
+// Returns the Hz of the underlying timer (returns 0 on error)
+pub const getTimerFreq = glfwGetTimerFrequency;
+extern fn glfwGetTimerFrequency() u64;
+// </cwalsh>
 
 pub const Error = error{
     NotInitialized,
